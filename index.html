@@ -1,0 +1,30 @@
+<html>
+    <h1>Simple XSS simulations</h1>
+    <h2>Senario: Inserting user created html contents into a web page.</h2>
+    <h2>html tags with some risks</h2>
+    <p>Possible xss access/vulnerability to below html tags when inserting user created html contents.</p>
+    <n3>Img tag</n3>
+    <img src='http://www.erorerer.com/a.jpg' onerror='alert("img tag run this script onerror!")' />
+    <img src=javascript:alert('XSS') />
+    <h3>a tag</h3>
+    <a href="javascript:alert('Executed javascript from a tag!')" >Click this link</a>
+    <h3>Button</h3>
+    <button onclick="console.log('You clicked a button you should not have!')">Click me!</button>
+    <h3>input</h3>
+    <input type="search" value=""/>
+    <h3>script tag</h3>
+    <script>
+        console.log('Here are my scripts!');
+    </script>
+    <h3>Style tag</h3>
+    <p class="text">This should a sentence with a black text.</p>
+    <style>
+        .text {
+            color: red;
+        }
+    </style>
+    <h2>Possible mitigations</h2>
+    <ul>
+        <li>Sanitise the data before saving onto your database.</li>
+    </ul>
+</html>
