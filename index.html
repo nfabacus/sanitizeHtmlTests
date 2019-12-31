@@ -4,19 +4,21 @@
     <h2>html tags with some risks</h2>
     <p>Possible xss access/vulnerability to below html tags when inserting user created html contents.</p>
     <n3>Img tag</n3>
-    <img src='http://www.erorerer.com/a.jpg' onerror='alert("img tag run this script onerror!")' />
-    <img src=javascript:alert('XSS') />
+    <img src='http://www.erorerer.com/a.jpg' onerror='alert("img tag run this script onerror!")' /> // This xss works.
+    <img src="javascript:alert('XSS')" />  // this does not seem to work any longer with modern browsers.
     <h3>a tag</h3>
-    <a href="javascript:alert('Executed javascript from a tag!')" >Click this link</a>
+    <a href="javascript:alert('Executed javascript from a tag!')" >Click this link</a>  // This xss works.
+    <div style="background-image: url('javascript: console.log("inline style attack!")');">test div 1</div>
+    <div style="width: expression(alert('XSS'));">test div 2</div>
     <h3>Button</h3>
-    <button onclick="console.log('You clicked a button you should not have!')">Click me!</button>
+    <button onclick="console.log('You clicked a button you should not have!')">Click me!</button>  // This obviously still works.
     <h3>input</h3>
     <input type="search" value=""/>
     <h3>script tag</h3>
-    <script>
+    <script>  // This obviously works.
         console.log('Here are my scripts!');
     </script>
-    <h3>Style tag</h3>
+    <h3>Style tag</h3> // Styles can be manipulated by style tag.
     <p class="text">This should a sentence with a black text.</p>
     <style>
         .text {

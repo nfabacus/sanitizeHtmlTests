@@ -4,9 +4,12 @@ var html = "<strong>hello world</strong>";
 console.log(sanitizeHtml(html));
 
 const options = {
-  allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img' ]),
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'span' ]),
   allowedAttributes: {
-    p: [ 'class' ],
+    p: [ 'class', 'style' ],
+    strong: [ 'class', 'style' ],
+    em: [ 'class', 'style' ],
+    span: [ 'class', 'style' ],
     img: [ 'src']
   }
 };
@@ -26,6 +29,18 @@ console.log(sanitizeHtml("<button>alert('Clicked button!')</button>"));  // butt
 //input and textarea
 console.log(sanitizeHtml('<input type="search" value="here is an input text."/>'));  // input tag is completely removed.
 console.log(sanitizeHtml('<textarea value="this is a textarea text."/>'));  // textarea tag is completely removed.
-console.log(sanitizeHtml('<p class="text">This is a test paragraph with css class</p>', options)); // class is removed by default but I added class to be included in the above options.
+console.log(sanitizeHtml('<p class="text" style="color:green">This is a test paragraph with css class and style</p>', options)); // class is removed by default but I added class to be included in the above options.
 
+// button
+console.log(sanitizeHtml('<button onclick="console.log(\'You clicked a button you should not have!\')">Click me!</button>'));
+
+// select
+console.log(sanitizeHtml('<select></select>'));
+
+// inline style
+console.log(sanitizeHtml('<p style="background-image: url(javascript:alert(7))">test paragraph 1</p>', options));  // The above options allow style and can retain injected code, but modern browsers do not seem to allow the xss code to run.
+console.log(sanitizeHtml('<p style="width: expression(alert(\'XSS\'));">test paragraph 2</p>', options)); // The above options allow style and can retain injected code, but modern browsers do not seem to allow the xss code to run.
+
+// style tag
+console.log(sanitizeHtml("<style>p[foo=bar{}*{-o-link:'javascript:alert(1)'}{}*{-o-link-source:current}*{background:red}]{background:green};</style>", options)); // style tag is completely removed.
 console.log(sanitizeHtml('<style>.text{ color: red; }</style>'));  // style tag is completely removed.
