@@ -4,14 +4,17 @@ var html = "<strong>hello world</strong>";
 console.log(sanitizeHtml(html));
 
 const options = {
-  allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'span' ]),
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'span', 'iframe' ]),
   allowedAttributes: {
+    div: ['class', 'style'],
     p: [ 'class', 'style' ],
     strong: [ 'class', 'style' ],
     em: [ 'class', 'style' ],
     span: [ 'class', 'style' ],
-    img: [ 'src']
-  }
+    img: [ 'src', 'width', 'height', 'style', 'class' ],
+    iframe: ['src', 'width', 'height', 'style', 'class']
+  },
+  allowedIframeHostnames: ['www.youtube.com', 'player.vimeo.com']
 };
 // img tag
 console.log(sanitizeHtml("<img src='https://images.unsplash.com/photo-1494256997604-768d1f608cac?ixlib=rb-1.2.1&auto=format&fit=crop&w=2001&q=80' onerror=alert('img') />", options));  // img is removed by default, but allowedTags will keep img tag while removing onerror in the tag. Also, add src for image address in the option above.
@@ -29,7 +32,13 @@ console.log(sanitizeHtml("<button>alert('Clicked button!')</button>"));  // butt
 //input and textarea
 console.log(sanitizeHtml('<input type="search" value="here is an input text."/>'));  // input tag is completely removed.
 console.log(sanitizeHtml('<textarea value="this is a textarea text."/>'));  // textarea tag is completely removed.
+
+// p tag
 console.log(sanitizeHtml('<p class="text" style="color:green">This is a test paragraph with css class and style</p>', options)); // class is removed by default but I added class to be included in the above options.
+
+// div tag
+console.log(sanitizeHtml('<div class="text" style="color:yellow">This is a test div with css class and style</div>', options)); // class is removed by default but I added class to be included in the above options.
+
 
 // button
 console.log(sanitizeHtml('<button onclick="console.log(\'You clicked a button you should not have!\')">Click me!</button>'));
@@ -44,3 +53,5 @@ console.log(sanitizeHtml('<p style="width: expression(alert(\'XSS\'));">test par
 // style tag
 console.log(sanitizeHtml("<style>p[foo=bar{}*{-o-link:'javascript:alert(1)'}{}*{-o-link-source:current}*{background:red}]{background:green};</style>", options)); // style tag is completely removed.
 console.log(sanitizeHtml('<style>.text{ color: red; }</style>'));  // style tag is completely removed.
+
+console.log(sanitizeHtml('<p><iframe src="https://www.youtube.com/embed/nykIhs12345" class="test" style="color: green"></iframe><p>', options));
