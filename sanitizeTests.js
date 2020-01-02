@@ -26,6 +26,28 @@ console.log(sanitizeHtml('<img SRC=JaVaScRiPt:alert(1) />', options)); // still 
 console.log(sanitizeHtml(`<a href="javascript:alert('Executed javascript from a tag!')" >Click this link</a>`, options));
 console.log(sanitizeHtml(`<a href="https://www.google.com" rel="noopener noreferrer" target="_blank">test link</a>`, options));
 
+// exclusive filter
+console.log('exclusive filter');
+const specialOptions = {
+  ...options,
+  exclusiveFilter: function(frame) {
+    console.log('filter>>>', frame.attribs.href.startsWith('https://mysite.com'));
+    return frame.tag === 'a' && !frame.attribs.href.startsWith('https://myallowedsite.com');
+  }
+};
+console.log(sanitizeHtml(`<a href="https://www.google.com" rel="noopener noreferrer" target="_blank">any link</a>`, specialOptions));
+console.log(sanitizeHtml(`<a href="https://myallowedsite.com" rel="noopener noreferrer" target="_blank">allowed link</a>`, specialOptions));
+
+const specialOptions2 = {
+  ...options,
+  exclusiveFilter: function(frame) {
+    console.log('filter>>>', frame.attribs.src.startsWith('https://myallowedsite.com'));
+    return frame.tag === 'img' && !frame.attribs.src.startsWith('https://myallowedsite.com');
+  }
+};
+console.log(sanitizeHtml("<img src='https://images.unsplash.com/photo-1494256997604-768d1f608cac?ixlib=rb-1.2.1&auto=format&fit=crop&w=2001&q=80' onerror=alert('img') />", specialOptions2));
+console.log(sanitizeHtml("<img src='https://myallowedsite.com/photo-1494256997604-768d1f608cac?ixlib=rb-1.2.1&auto=format&fit=crop&w=2001&q=80' onerror=alert('img') />", specialOptions2));
+
 //　script tag
 console.log(sanitizeHtml("<script>alert('hello world 2')</script>"));  // script is completely removed
 console.log(sanitizeHtml("<button>alert('Clicked button!')</button>"));  // button tag is removed but leaves the child string.
