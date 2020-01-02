@@ -4,8 +4,9 @@ var html = "<strong>hello world</strong>";
 console.log(sanitizeHtml(html));
 
 const options = {
-  allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'span', 'iframe' ]),
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'span' ]),
   allowedAttributes: {
+    a: ['href', 'rel', 'target'],
     div: ['class', 'style'],
     p: [ 'class', 'style' ],
     strong: [ 'class', 'style' ],
@@ -22,8 +23,8 @@ console.log(sanitizeHtml('<img SRC="javascript:alert(1);"/>', options)); // stil
 console.log(sanitizeHtml('<img SRC="JaVaScRiPt:alert(1);"/>', options)); // still removes any javascript from src.
 console.log(sanitizeHtml('<img SRC=JaVaScRiPt:alert(1) />', options)); // still removes any javascript from src.
 // a tag
-console.log(sanitizeHtml(`<a href="javascript:alert('Executed javascript from a tag!')" >Click this link</a>`));
-console.log(sanitizeHtml(`<a href="https://www.google.com" >visit google.com</a>`));
+console.log(sanitizeHtml(`<a href="javascript:alert('Executed javascript from a tag!')" >Click this link</a>`, options));
+console.log(sanitizeHtml(`<a href="https://www.google.com" rel="noopener noreferrer" target="_blank">test link</a>`, options));
 
 //　script tag
 console.log(sanitizeHtml("<script>alert('hello world 2')</script>"));  // script is completely removed
